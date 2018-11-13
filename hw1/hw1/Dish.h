@@ -10,10 +10,13 @@ enum DishType {
 class Dish {
 public:
 	Dish(int d_id, std::string d_name, int d_price, DishType d_type);
+	//Dish(const Dish &other);
 	int getId() const;
 	std::string getName() const;
 	int getPrice() const;
 	DishType getType() const;
+	//Dish& operator=(const Dish &other);
+	//~Dish();
 private:
 	const int id;
 	const std::string name;

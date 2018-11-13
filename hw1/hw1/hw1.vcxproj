@@ -122,6 +122,7 @@
     <ClInclude Include="Table.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Dish.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
