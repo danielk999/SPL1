@@ -36,6 +36,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dish.cpp">
+    <ClCompile Include="Customer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
