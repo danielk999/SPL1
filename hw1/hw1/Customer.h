@@ -8,13 +8,18 @@
 class Customer {
 public:
 	Customer(std::string c_name, int c_id);
+	Customer(Customer &other);
+	Customer(Customer &&other);
 	virtual std::vector<int> order(const std::vector<Dish> &menu) = 0;
 	virtual std::string toString() const = 0;
+	virtual ~Customer();
+	Customer & operator = (const Customer &other);
+	Customer & operator = (Customer &&other);
 	std::string getName() const;
 	int getId() const;
 private:
 	const std::string name;
-	const int id
+	const int id;
 };
 
 
@@ -42,15 +47,18 @@ public:
 	std::vector<int> order(const std::vector<Dish> &menu);
 	std::string toString() const;
 private:
+	bool hasOrdered = false;
 };
 
 
 class AlchoholicCustomer : public Customer {
 public:
-	AlchoholicCustomer(std::string name, int id)
-		std::vector<int> order(const std::vector<Dish> &menu);
+	AlchoholicCustomer(std::string name, int id);
+	std::vector<int> order(const std::vector<Dish> &menu);
 	std::string toString() const;
 private:
+	int lastPrice = 0;
+	int lastId = 0;
 };
 
 
