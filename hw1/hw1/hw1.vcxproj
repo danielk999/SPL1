@@ -127,6 +127,7 @@
     <ClCompile Include="Customer.cpp" />
     <ClCompile Include="Dish.cpp" />
     <ClCompile Include="Restaurant.cpp" />
+    <ClCompile Include="Action.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

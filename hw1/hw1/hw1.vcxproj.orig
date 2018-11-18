@@ -123,13 +123,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="Table.cpp" />
-=======
-    <ClCompile Include="Dish.cpp" />
     <ClCompile Include="Customer.cpp" />
+    <ClCompile Include="Dish.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="Restaurant.cpp" />
->>>>>>> Restaurant
+=======
+    <ClCompile Include="Action.cpp" />
+>>>>>>> Actions
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
