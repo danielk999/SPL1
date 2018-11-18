@@ -46,7 +46,6 @@ void Table::removeCustomer(int id)
 	for (vector<Customer*>::iterator it = customersList.begin(); it != customersList.end(); ++it)
 		if ((*it)->getId() == id)
 		{
-			delete *it;
 			customersList.erase(it);
 			break;
 		}

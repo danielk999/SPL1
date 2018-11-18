@@ -119,3 +119,38 @@ BaseAction * Order::clone()
 	return new Order(tableId);
 }
 
+MoveCustomer::MoveCustomer(int src, int dst, int customerId): srcTable(src), dstTable(dst), id(customerId)
+{
+}
+
+void MoveCustomer::act(Restaurant & restaurant)
+{
+	Table* src = restaurant.getTable(srcTable);
+	Table* dst = restaurant.getTable(dstTable);
+	Customer* c;
+	if (src != nullptr)
+		c = src->getCustomer(id);
+	if (src == nullptr || !src->isOpen() || dst == nullptr || !dst->isOpen() || c == nullptr || dst->getCapacity == dst->getCustomers().size())
+	{
+		error("Cannot move customer");
+		return;
+	}
+	vector<OrderPair> orders = src->getCustomerOrders(id);
+	src->removeCustomerOrders(id);
+	src->removeCustomer(id);	
+	if (src->getCustomers().size() == 0)
+		src->closeTable();
+	dst->addCustomer(c);
+	dst->addOrders(orders);
+	complete();
+}
+
+std::string MoveCustomer::toString() const
+{
+	return "move " + to_string(srcTable) + ' ' + to_string(dstTable) + ' ' + to_string(id);
+}
+
+BaseAction * MoveCustomer::clone()
+{
+	return new MoveCustomer(srcTable, dstTable, id);
+}
