@@ -12,13 +12,22 @@ class Restaurant {
 public:
 	Restaurant();
 	Restaurant(const std::string &configFilePath);
+	Restaurant(Restaurant & other);
+	Restaurant(Restaurant && other);
+	Restaurant & operator= (Restaurant & other);
+	Restaurant & operator= (Restaurant && other);
+	virtual ~Restaurant();
 	void start();
 	int getNumOfTables() const;
 	Table* getTable(int ind);
 	const std::vector<BaseAction*>& getActionsLog() const; // Return a reference to the history of actions
 	std::vector<Dish>& getMenu();
+	bool isOpen();
 
 private:
+	int Tid = 0;
+	int Cid = 0;
+	int Tnumber;
 	bool open;
 	std::vector<Table*> tables;
 	std::vector<Dish> menu;

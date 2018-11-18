@@ -122,12 +122,14 @@
     <ClInclude Include="Table.h" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
-    <ClCompile Include="Dish.cpp" />
-=======
-    <ClCompile Include="Customer.cpp" />
->>>>>>> Customer
     <ClCompile Include="Main.cpp" />
+<<<<<<< HEAD
+    <ClCompile Include="Table.cpp" />
+=======
+    <ClCompile Include="Dish.cpp" />
+    <ClCompile Include="Customer.cpp" />
+    <ClCompile Include="Restaurant.cpp" />
+>>>>>>> Restaurant
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
