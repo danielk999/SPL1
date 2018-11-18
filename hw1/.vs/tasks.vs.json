@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskName": "task-Restaurant",
+      "appliesTo": "hw1/Restaurant.cpp",
+      "type": "launch"
+    }
+  ]
+}

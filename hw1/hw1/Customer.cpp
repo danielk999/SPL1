@@ -36,6 +36,12 @@ int Customer::getId() const
 
 VegetarianCustomer::VegetarianCustomer(std::string name, int id):Customer(name,id){}
 
+Customer * VegetarianCustomer::clone()
+{
+	Customer *toReturn = new VegetarianCustomer(*this);
+	return toReturn;
+}
+
 std::vector<int> VegetarianCustomer::order(const std::vector<Dish>& menu)
 {
 	int smallestid(-1), price(0), idofbvg = 0;;
@@ -80,12 +86,19 @@ std::vector<int> VegetarianCustomer::order(const std::vector<Dish>& menu)
 std::string VegetarianCustomer::toString() const
 {
 	std::string toReturn;
-	toReturn += this->getId();
 	toReturn += getName();
+	toReturn += ',';
+	toReturn += "veg";
 	return toReturn;
 }
 
 CheapCustomer::CheapCustomer(std::string name, int id):Customer(name,id){}
+
+Customer * CheapCustomer::clone()
+{
+	Customer *toReturn = new CheapCustomer(*this);
+	return toReturn;
+}
 
 std::vector<int> CheapCustomer::order(const std::vector<Dish>& menu)
 {
@@ -108,13 +121,20 @@ std::vector<int> CheapCustomer::order(const std::vector<Dish>& menu)
 std::string CheapCustomer::toString() const
 {
 	std::string toReturn;
-	toReturn += this->getId();
 	toReturn += getName();
+	toReturn += ',';
+	toReturn += "chp";
 	return toReturn;
 }
 
 SpicyCustomer::SpicyCustomer(std::string name, int id):Customer(name,id)
 {
+}
+
+Customer * SpicyCustomer::clone()
+{
+	Customer *toReturn = new SpicyCustomer(*this);
+	return toReturn;
 }
 
 std::vector<int> SpicyCustomer::order(const std::vector<Dish>& menu)
@@ -181,14 +201,21 @@ std::vector<int> SpicyCustomer::order(const std::vector<Dish>& menu)
 
 std::string SpicyCustomer::toString() const
 {
-	std::string toReturn;
-	toReturn += this->getId();
+	std::string toReturn="";
 	toReturn += getName();
+	toReturn += ',';
+	toReturn += "spc";
 	return toReturn;
 }
 
 AlchoholicCustomer::AlchoholicCustomer(std::string name, int id): Customer(name, id)
 {
+}
+
+Customer * AlchoholicCustomer::clone()
+{
+	Customer *toReturn = new AlchoholicCustomer(*this);
+	return toReturn;
 }
 
 std::vector<int> AlchoholicCustomer::order(const std::vector<Dish>& menu)
@@ -227,8 +254,9 @@ std::vector<int> AlchoholicCustomer::order(const std::vector<Dish>& menu)
 
 std::string AlchoholicCustomer::toString() const
 {
-	std::string toReturn;
-	toReturn += this->getId();
+	std::string toReturn="";
 	toReturn += getName();
+	toReturn += ',';
+	toReturn += "alc";
 	return toReturn;
 }
