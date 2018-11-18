@@ -1,5 +1,6 @@
 #include "Action.h"
 #include "Table.h"
+#include "Restaurant.h"
 
 using namespace std;
 
@@ -28,6 +29,17 @@ std::string BaseAction::getErrorMsg() const
 	return errorMsg;
 }
 
+string BaseAction::statusToString() const
+{
+	if (getStatus() == COMPLETED)
+		return "Completed";
+	if (getStatus() == PENDING)
+		return "Pending";
+	if (getStatus() == ERROR)
+		return "Error: " + getErrorMsg();
+	return "";
+}
+
 OpenTable::OpenTable(int id, std::vector<Customer*>& customersList): tableId(id), customers(customersList)
 {
 }
@@ -35,7 +47,7 @@ OpenTable::OpenTable(int id, std::vector<Customer*>& customersList): tableId(id)
 void OpenTable::act(Restaurant & restaurant)
 {
 	Table* t = restaurant.getTable(tableId);
-	if (t == nullptr | t->isOpen())
+	if (t == nullptr || t->isOpen() || customers.size() > t->getCapacity())
 	{
 		error("Table does not exist or is already open");
 		return;
@@ -54,17 +66,56 @@ void OpenTable::act(Restaurant & restaurant)
 
 std::string OpenTable::toString() const
 {
-	string statusStr;
-	if (getStatus() == COMPLETED)
-		statusStr = "Completed";
-	if (getStatus() == PENDING)
-		statusStr = "Pending";
-	if (getStatus() == ERROR)
-		statusStr = "Error: " + getErrorMsg();
-	return "open " + to_string(tableId) + ' ' + customersStr + statusStr;
+	return "open " + to_string(tableId) + ' ' + customersStr + statusToString();
 }
 
 BaseAction * OpenTable::clone()
 {
 	return new OpenTable(tableId, customers);
 }
+
+Order::Order(int id): tableId(id)
+{
+}
+
+void Order::act(Restaurant & restaurant)
+{
+	Table* t = restaurant.getTable(tableId);
+	if (t == nullptr || !t->isOpen())
+	{
+		error("Table does not exist or is not open");
+		return;
+	}
+	vector<OrderPair> oldOrders = t->getOrders();
+	t->order(restaurant.getMenu());
+	vector<OrderPair> newOrders = t->getOrders();
+	for (int i = 0; i < oldOrders.size(); i++)
+	{
+		for (int j = 0; j < newOrders.size(); j++)
+		{
+			if (oldOrders.at(i) == newOrders.at(j))
+			{
+				newOrders.at(j).first = -1;
+				oldOrders.at(i).first = -1;
+				break;
+			}
+		}
+	}
+	for (int i = 0; i < newOrders.size(); i++)
+	{
+		if(newOrders.at(i).first != -1)
+			cout << t->getCustomer(newOrders.at(i).first)->getName() << " ordered " << newOrders.at(i).second.getName() << endl;
+	}
+	complete();
+}
+
+std::string Order::toString() const
+{
+	return "order " + to_string(tableId) + ' ' + statusToString();
+}
+
+BaseAction * Order::clone()
+{
+	return new Order(tableId);
+}
+
