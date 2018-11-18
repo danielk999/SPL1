@@ -299,6 +299,7 @@ void Restaurant::start()
 			BaseAction *act = new CloseAll();
 			act->act(*this);
 			actionsLog.push_back(act);
+			running=false;
 		}
 	}
 }
