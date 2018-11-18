@@ -6,11 +6,6 @@ Dish::Dish(int d_id, std::string d_name, int d_price, DishType d_type)
 {
 }
 
-//Dish::Dish(const Dish & other)
-//	: id(other.id), name(other.name), price(other.price), type(other.type)
-//{
-//}
-
 int Dish::getId() const
 {
 	return id;
@@ -30,7 +25,3 @@ DishType Dish::getType() const
 {
 	return type;
 }
-
-//Dish::~Dish()
-//{
-//}
