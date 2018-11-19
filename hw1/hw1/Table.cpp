@@ -59,6 +59,30 @@ Customer * Table::getCustomer(int id)
 	return nullptr;
 }
 
+std::vector<OrderPair> Table::getCustomerOrders(int id)
+{
+	vector<OrderPair> orders;
+	for (int i = 0; i < orderList.size(); i++)
+		if (orderList.at(i).first == id)
+			orders.push_back(orderList.at(i));
+	return orders;
+}
+
+void Table::removeCustomerOrders(int id)
+{
+	vector<OrderPair> orders;
+	for (int i = 0; i < orderList.size(); i++)
+		if (orderList.at(i).first != id)
+			orders.push_back(orderList.at(i));
+	orderList = orders;
+}
+
+void Table::addOrders(std::vector<OrderPair> orders)
+{
+	for (int i = 0; i < orders.size(); i++)
+		orderList.push_back(orders.at(i));
+}
+
 vector<Customer*>& Table::getCustomers()
 {
 	return customersList;
