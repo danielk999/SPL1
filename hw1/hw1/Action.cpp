@@ -205,8 +205,7 @@ BackupRestaurant::BackupRestaurant()
 
 void BackupRestaurant::act(Restaurant & restaurant)
 {
-	delete backup;
-	backup = new Restaurant(restaurant);
+	backup = &restaurant;
 	complete();
 }
 
@@ -218,4 +217,29 @@ std::string BackupRestaurant::toString() const
 BaseAction * BackupRestaurant::clone()
 {
 	return new BackupRestaurant();
+}
+
+RestoreResturant::RestoreResturant()
+{
+}
+
+void RestoreResturant::act(Restaurant & restaurant)
+{
+	if (backup == nullptr)
+	{
+		error("No backup available");
+		return;
+	}
+	restaurant = *backup;
+	complete();
+}
+
+std::string RestoreResturant::toString() const
+{
+	return "restore "+statusToString();
+}
+
+BaseAction * RestoreResturant::clone()
+{
+	return new RestoreResturant();
 }
