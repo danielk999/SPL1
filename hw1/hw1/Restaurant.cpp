@@ -84,8 +84,8 @@ Restaurant::Restaurant(const std::string & configFilePath):open(false), tables()
 				{
 					t = BVG;
 				}
-				menu.push_back(Dish(Tid,dishes.at(0),stoi(dishes.at(2)),t));
-				Tid++;
+				menu.push_back(Dish(Did,dishes.at(0),stoi(dishes.at(2)),t));
+				Did++;
 			}
 		}
 	}
@@ -99,7 +99,7 @@ Restaurant::Restaurant(Restaurant & other):Tnumber(other.getNumOfTables()),open(
 	}
 	for (int i = 0; i < other.actionsLog.size(); i++)
 	{
-		actionsLog.push_back(other.actionsLog.at(i).clone());
+		actionsLog.push_back(other.actionsLog.at(i)->clone());
 	}
 }
 
@@ -128,7 +128,7 @@ Restaurant & Restaurant::operator=(Restaurant & other)
 	}
 	for (int i = 0; i < other.actionsLog.size(); i++)
 	{
-		actionsLog.push_back(other.actionsLog.at(i).clone());
+		actionsLog.push_back(other.actionsLog.at(i)->clone());
 	}
 	menu = other.menu;
 	return *this;
@@ -299,6 +299,7 @@ void Restaurant::start()
 			BaseAction *act = new CloseAll();
 			act->act(*this);
 			actionsLog.push_back(act);
+			delete this;
 			running=false;
 		}
 	}
@@ -311,10 +312,9 @@ int Restaurant::getNumOfTables() const
 
 Table * Restaurant::getTable(int ind)
 {
-	for (int i = 0; i < tables.size(); i++)
+	if (tables.size()>ind)
 	{
-		if (tables.at(i)->getCustomer(ind) != nullptr)
-			return tables.at(i);
+		return tables.at(ind - 1);
 	}
 	return nullptr;
 }

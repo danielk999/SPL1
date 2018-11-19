@@ -25,7 +25,7 @@ public:
 	bool isOpen();
 
 private:
-	int Tid = 0;
+	int Did = 0;
 	int Cid = 0;
 	int Tnumber;
 	bool open;

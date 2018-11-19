@@ -6,6 +6,7 @@ Table::Table(int t_capacity): capacity(t_capacity), open(false), customersList()
 {
 }
 
+
 Table::Table(const Table & other): capacity(other.getCapacity()), open(other.open), orderList(other.orderList)
 {
 	for (int i = 0; i < other.customersList.size(); i++)
