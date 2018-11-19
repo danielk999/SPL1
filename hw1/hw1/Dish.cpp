@@ -25,3 +25,13 @@ DishType Dish::getType() const
 {
 	return type;
 }
+
+std::string Dish::toString() const
+{
+	string strType;
+	if (type == VEG)	strType = "VEG";
+	if (type == SPC)	strType = "SPC";
+	if (type == BVG)	strType = "BVG";
+	if (type == ALC)	strType = "ALC";
+	return name + ' ' + strType + ' ' + to_string(price) + "NIS";
+}

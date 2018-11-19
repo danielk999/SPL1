@@ -10,16 +10,7 @@ Table::Table(int t_capacity): capacity(t_capacity), open(false), customersList()
 Table::Table(const Table & other): capacity(other.getCapacity()), open(other.open), orderList(other.orderList)
 {
 	for (int i = 0; i < other.customersList.size(); i++)
-	{
-		if (dynamic_cast<VegetarianCustomer*>(other.customersList.at(i)))
-			customersList.push_back(new VegetarianCustomer(other.customersList.at(i)->getName(), other.customersList.at(i)->getId()));
-		if (dynamic_cast<CheapCustomer*>(other.customersList.at(i)))
-			customersList.push_back(new CheapCustomer(other.customersList.at(i)->getName(), other.customersList.at(i)->getId()));
-		if (dynamic_cast<SpicyCustomer*>(other.customersList.at(i)))
-			customersList.push_back(new SpicyCustomer(other.customersList.at(i)->getName(), other.customersList.at(i)->getId()));
-		if (dynamic_cast<AlchoholicCustomer*>(other.customersList.at(i)))
-			customersList.push_back(new AlchoholicCustomer(other.customersList.at(i)->getName(), other.customersList.at(i)->getId()));
-	}
+		customersList.push_back(other.customersList.at(i)->clone);
 }
 
 Table::Table(Table && other): capacity(other.getCapacity()), open(other.open), orderList(other.orderList)
@@ -47,7 +38,6 @@ void Table::removeCustomer(int id)
 	for (vector<Customer*>::iterator it = customersList.begin(); it != customersList.end(); ++it)
 		if ((*it)->getId() == id)
 		{
-			delete *it;
 			customersList.erase(it);
 			break;
 		}
@@ -59,6 +49,30 @@ Customer * Table::getCustomer(int id)
 		if ((*it)->getId() == id)
 			return *it;
 	return nullptr;
+}
+
+std::vector<OrderPair> Table::getCustomerOrders(int id)
+{
+	vector<OrderPair> orders;
+	for (int i = 0; i < orderList.size(); i++)
+		if (orderList.at(i).first == id)
+			orders.push_back(orderList.at(i));
+	return orders;
+}
+
+void Table::removeCustomerOrders(int id)
+{
+	vector<OrderPair> orders;
+	for (int i = 0; i < orderList.size(); i++)
+		if (orderList.at(i).first != id)
+			orders.push_back(orderList.at(i));
+	orderList = orders;
+}
+
+void Table::addOrders(std::vector<OrderPair> orders)
+{
+	for (int i = 0; i < orders.size(); i++)
+		orderList.push_back(orders.at(i));
 }
 
 vector<Customer*>& Table::getCustomers()
@@ -133,20 +147,9 @@ Table & Table::operator=(const Table & other)
 	capacity = other.capacity;
 	open = other.open;
 	for (int i = 0; i < other.customersList.size(); i++)
-	{
-		if (dynamic_cast<VegetarianCustomer*>(other.customersList.at(i)))
-			customersList.push_back(new VegetarianCustomer(other.customersList.at(i)->getName(), other.customersList.at(i)->getId()));
-		if (dynamic_cast<CheapCustomer*>(other.customersList.at(i)))
-			customersList.push_back(new CheapCustomer(other.customersList.at(i)->getName(), other.customersList.at(i)->getId()));
-		if (dynamic_cast<SpicyCustomer*>(other.customersList.at(i)))
-			customersList.push_back(new SpicyCustomer(other.customersList.at(i)->getName(), other.customersList.at(i)->getId()));
-		if (dynamic_cast<AlchoholicCustomer*>(other.customersList.at(i)))
-			customersList.push_back(new AlchoholicCustomer(other.customersList.at(i)->getName(), other.customersList.at(i)->getId()));
-	}
+		customersList.push_back(other.customersList.at(i)->clone);
 	for (int i = 0; i < other.orderList.size(); i++)
-	{
 		orderList.push_back(other.orderList.at(i));
-	}
 	return *this;
 }
 

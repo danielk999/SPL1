@@ -119,6 +119,42 @@ BaseAction * Order::clone()
 	return new Order(tableId);
 }
 
+MoveCustomer::MoveCustomer(int src, int dst, int customerId): srcTable(src), dstTable(dst), id(customerId)
+{
+}
+
+void MoveCustomer::act(Restaurant & restaurant)
+{
+	Table* src = restaurant.getTable(srcTable);
+	Table* dst = restaurant.getTable(dstTable);
+	Customer* c;
+	if (src != nullptr)
+		c = src->getCustomer(id);
+	if (src == nullptr || !src->isOpen() || dst == nullptr || !dst->isOpen() || c == nullptr || dst->getCapacity == dst->getCustomers().size())
+	{
+		error("Cannot move customer");
+		return;
+	}
+	vector<OrderPair> orders = src->getCustomerOrders(id);
+	src->removeCustomerOrders(id);
+	src->removeCustomer(id);	
+	if (src->getCustomers().size() == 0)
+		src->closeTable();
+	dst->addCustomer(c);
+	dst->addOrders(orders);
+	complete();
+}
+
+std::string MoveCustomer::toString() const
+{
+	return "move " + to_string(srcTable) + ' ' + to_string(dstTable) + ' ' + to_string(id);
+}
+
+BaseAction * MoveCustomer::clone()
+{
+	return new MoveCustomer(srcTable, dstTable, id);
+}
+
 Close::Close(int id):tableId(id)
 {
 }
@@ -179,6 +215,28 @@ BaseAction * CloseAll::clone()
 	return new CloseAll();
 }
 
+PrintMenu::PrintMenu()
+{
+}
+
+void PrintMenu::act(Restaurant & restaurant)
+{
+	vector<Dish> menu = restaurant.getMenu();
+	for (int i = 0; i < menu.size(); i++)
+		cout << menu.at(i).toString() << endl;
+	complete();
+}
+
+std::string PrintMenu::toString() const
+{
+	return "menu "+statusToString();
+}
+
+BaseAction * PrintMenu::clone()
+{
+	return new PrintMenu();
+}
+
 PrintTableStatus::PrintTableStatus(int id):tableId(id)
 {
 }
@@ -210,4 +268,71 @@ std::string PrintTableStatus::toString() const
 BaseAction * PrintTableStatus::clone()
 {
 	return new PrintTableStatus(tableId);
+}
+
+PrintActionsLog::PrintActionsLog()
+{
+}
+
+void PrintActionsLog::act(Restaurant & restaurant)
+{
+	vector<BaseAction*> actions = restaurant.getActionsLog();
+	for (int i = actions.size() - 1; i >= 0; i--)
+		cout << actions.at(i)->toString() << endl;
+	complete();
+}
+
+std::string PrintActionsLog::toString() const
+{
+	return "log "+statusToString();
+}
+
+BaseAction * PrintActionsLog::clone()
+{
+	return new PrintActionsLog();
+}
+
+BackupRestaurant::BackupRestaurant()
+{
+}
+
+void BackupRestaurant::act(Restaurant & restaurant)
+{
+	backup = &restaurant;
+	complete();
+}
+
+std::string BackupRestaurant::toString() const
+{
+	return "backup "+statusToString();
+}
+
+BaseAction * BackupRestaurant::clone()
+{
+	return new BackupRestaurant();
+}
+
+RestoreResturant::RestoreResturant()
+{
+}
+
+void RestoreResturant::act(Restaurant & restaurant)
+{
+	if (backup == nullptr)
+	{
+		error("No backup available");
+		return;
+	}
+	restaurant = *backup;
+	complete();
+}
+
+std::string RestoreResturant::toString() const
+{
+	return "restore "+statusToString();
+}
+
+BaseAction * RestoreResturant::clone()
+{
+	return new RestoreResturant();
 }
