@@ -198,3 +198,24 @@ BaseAction * PrintActionsLog::clone()
 {
 	return new PrintActionsLog();
 }
+
+BackupRestaurant::BackupRestaurant()
+{
+}
+
+void BackupRestaurant::act(Restaurant & restaurant)
+{
+	delete backup;
+	backup = new Restaurant(restaurant);
+	complete();
+}
+
+std::string BackupRestaurant::toString() const
+{
+	return "backup "+statusToString();
+}
+
+BaseAction * BackupRestaurant::clone()
+{
+	return new BackupRestaurant();
+}
