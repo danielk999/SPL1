@@ -9,16 +9,7 @@ Table::Table(int t_capacity): capacity(t_capacity), open(false), customersList()
 Table::Table(const Table & other): capacity(other.getCapacity()), open(other.open), orderList(other.orderList)
 {
 	for (int i = 0; i < other.customersList.size(); i++)
-	{
-		if (dynamic_cast<VegetarianCustomer*>(other.customersList.at(i)))
-			customersList.push_back(new VegetarianCustomer(other.customersList.at(i)->getName(), other.customersList.at(i)->getId()));
-		if (dynamic_cast<CheapCustomer*>(other.customersList.at(i)))
-			customersList.push_back(new CheapCustomer(other.customersList.at(i)->getName(), other.customersList.at(i)->getId()));
-		if (dynamic_cast<SpicyCustomer*>(other.customersList.at(i)))
-			customersList.push_back(new SpicyCustomer(other.customersList.at(i)->getName(), other.customersList.at(i)->getId()));
-		if (dynamic_cast<AlchoholicCustomer*>(other.customersList.at(i)))
-			customersList.push_back(new AlchoholicCustomer(other.customersList.at(i)->getName(), other.customersList.at(i)->getId()));
-	}
+		customersList.push_back(other.customersList.at(i)->clone);
 }
 
 Table::Table(Table && other): capacity(other.getCapacity()), open(other.open), orderList(other.orderList)
@@ -155,20 +146,9 @@ Table & Table::operator=(const Table & other)
 	capacity = other.capacity;
 	open = other.open;
 	for (int i = 0; i < other.customersList.size(); i++)
-	{
-		if (dynamic_cast<VegetarianCustomer*>(other.customersList.at(i)))
-			customersList.push_back(new VegetarianCustomer(other.customersList.at(i)->getName(), other.customersList.at(i)->getId()));
-		if (dynamic_cast<CheapCustomer*>(other.customersList.at(i)))
-			customersList.push_back(new CheapCustomer(other.customersList.at(i)->getName(), other.customersList.at(i)->getId()));
-		if (dynamic_cast<SpicyCustomer*>(other.customersList.at(i)))
-			customersList.push_back(new SpicyCustomer(other.customersList.at(i)->getName(), other.customersList.at(i)->getId()));
-		if (dynamic_cast<AlchoholicCustomer*>(other.customersList.at(i)))
-			customersList.push_back(new AlchoholicCustomer(other.customersList.at(i)->getName(), other.customersList.at(i)->getId()));
-	}
+		customersList.push_back(other.customersList.at(i)->clone);
 	for (int i = 0; i < other.orderList.size(); i++)
-	{
 		orderList.push_back(other.orderList.at(i));
-	}
 	return *this;
 }
 
