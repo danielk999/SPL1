@@ -164,6 +164,7 @@ void PrintMenu::act(Restaurant & restaurant)
 	vector<Dish> menu = restaurant.getMenu();
 	for (int i = 0; i < menu.size(); i++)
 		cout << menu.at(i).toString() << endl;
+	complete();
 }
 
 std::string PrintMenu::toString() const
@@ -174,4 +175,26 @@ std::string PrintMenu::toString() const
 BaseAction * PrintMenu::clone()
 {
 	return new PrintMenu();
+}
+
+PrintActionsLog::PrintActionsLog()
+{
+}
+
+void PrintActionsLog::act(Restaurant & restaurant)
+{
+	vector<BaseAction*> actions = restaurant.getActionsLog();
+	for (int i = actions.size() - 1; i >= 0; i--)
+		cout << actions.at(i)->toString() << endl;
+	complete();
+}
+
+std::string PrintActionsLog::toString() const
+{
+	return "log "+statusToString();
+}
+
+BaseAction * PrintActionsLog::clone()
+{
+	return new PrintActionsLog();
 }
