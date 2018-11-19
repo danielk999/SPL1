@@ -154,3 +154,24 @@ BaseAction * MoveCustomer::clone()
 {
 	return new MoveCustomer(srcTable, dstTable, id);
 }
+
+PrintMenu::PrintMenu()
+{
+}
+
+void PrintMenu::act(Restaurant & restaurant)
+{
+	vector<Dish> menu = restaurant.getMenu();
+	for (int i = 0; i < menu.size(); i++)
+		cout << menu.at(i).toString() << endl;
+}
+
+std::string PrintMenu::toString() const
+{
+	return "menu "+statusToString();
+}
+
+BaseAction * PrintMenu::clone()
+{
+	return new PrintMenu();
+}
