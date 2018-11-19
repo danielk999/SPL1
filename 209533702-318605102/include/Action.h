@@ -4,9 +4,8 @@
 #include <string>
 #include <iostream>
 #include "Customer.h"
-#include "Restaurant.h"
 
-extern Restaurant* backup;
+
 
 enum ActionStatus {
 	PENDING, COMPLETED, ERROR
@@ -14,7 +13,7 @@ enum ActionStatus {
 
 //Forward declaration
 class Restaurant;
-
+extern Restaurant* backup;
 class BaseAction {
 public:
 	BaseAction();
@@ -22,6 +21,7 @@ public:
 	virtual void act(Restaurant& restaurant) = 0;
 	virtual std::string toString() const = 0;
 	virtual BaseAction* clone() = 0;
+	virtual ~BaseAction();
 protected:
 	void complete();
 	void error(std::string errorMsg);

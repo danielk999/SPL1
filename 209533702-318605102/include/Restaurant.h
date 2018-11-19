@@ -27,7 +27,7 @@ public:
 private:
 	int Did = 0;
 	int Cid = 0;
-	int Tnumber;
+	int Tnumber=0;
 	bool open;
 	std::vector<Table*> tables;
 	std::vector<Dish> menu;

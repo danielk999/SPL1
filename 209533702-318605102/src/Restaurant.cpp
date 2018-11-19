@@ -14,16 +14,16 @@ Restaurant::Restaurant(const std::string & configFilePath):open(false), tables()
 		results.push_back(input);
 	}
 	int count = 1;
-	for (int i = 0; i < results.size(); i++)
+	for (int i = 0; i < (int)results.size(); i++)
 	{
-		if (results.at(i)[0] != '#' & results.at(i)!="")
+		if ((results.at(i)[0] != '#') & (results.at(i)!=""))
 		{
 			if (count == 1)
 			{
 				int length = 0;
-				for (int j = 0; j < results.at(i).size(); j++) 
+				for (int j = 0; j < (int)results.at(i).size(); j++) 
 				{
-					if (results.at(i)[j] != ' ' & results.at(i)[j] != '\n')
+					if ((results.at(i)[j] != ' ') & (results.at(i)[j] != '\n'))
 					{
 						length = length * 10 + (int)results.at(i)[j];
 					}
@@ -42,12 +42,12 @@ Restaurant::Restaurant(const std::string & configFilePath):open(false), tables()
 				while (std::getline(iss, input, ',')) {
 					TSeats.push_back(input);
 				}
-				for (int j = 0; j < TSeats.size() & j < Tnumber; j++)
+				for (int j = 0; (j < (int)TSeats.size()) & (j < Tnumber); j++)
 				{
 					int length = 0;
-					for (int j = 0; j < results.at(i).size(); j++)
+					for (int j = 0; j < (int)results.at(i).size(); j++)
 					{
-						if (results.at(i)[j] != ' ' & results.at(i)[j] != '\n')
+						if ((results.at(i)[j] != ' ') & (results.at(i)[j] != '\n'))
 						{
 							length = length * 10 + (int)results.at(i)[j];
 						}
@@ -91,13 +91,13 @@ Restaurant::Restaurant(const std::string & configFilePath):open(false), tables()
 	}
 }
 
-Restaurant::Restaurant(Restaurant & other):Tnumber(other.getNumOfTables()),open(other.isOpen()), menu(other.menu)
+Restaurant::Restaurant(Restaurant & other):Tnumber(other.getNumOfTables()),open(other.isOpen()),tables(), menu(other.menu),actionsLog()
 {
-	for (int i = 0; i < other.tables.size(); i++)
+	for (int i = 0; i < (int)other.tables.size(); i++)
 	{
 		tables.push_back(new Table(*other.tables.at(i)));
 	}
-	for (int i = 0; i < other.actionsLog.size(); i++)
+	for (int i = 0; i < (int)other.actionsLog.size(); i++)
 	{
 		actionsLog.push_back(other.actionsLog.at(i)->clone());
 	}
@@ -113,24 +113,27 @@ Restaurant & Restaurant::operator=(Restaurant & other)
 {
 	if (this == &other)
 		return *this;
-	for (int i = 0; i < tables.size(); i++) {
+	for (int i = 0; i < (int)tables.size(); i++) {
 		delete tables.at(i);
 	}
-	for (int i = 0; i < actionsLog.size(); i++) {
+	for (int i = 0; i < (int)actionsLog.size(); i++) {
 		delete actionsLog.at(i);
 	}
 	menu.clear();
 	Tnumber = other.getNumOfTables();
 	open = other.isOpen();
-	for (int i = 0; i < other.tables.size(); i++)
+	for (int i = 0; i < (int)other.tables.size(); i++)
 	{
 		tables.push_back(new Table(*other.tables.at(i)));
 	}
-	for (int i = 0; i < other.actionsLog.size(); i++)
+	for (int i = 0; i < (int)other.actionsLog.size(); i++)
 	{
 		actionsLog.push_back(other.actionsLog.at(i)->clone());
 	}
-	menu = other.menu;
+	for (int i = 0; i < (int)other.menu.size(); i++)
+	{
+		menu.push_back(other.menu.at(i));
+	}
 	return *this;
 }
 
@@ -142,17 +145,20 @@ Restaurant & Restaurant::operator=(Restaurant && other)
 		other.actionsLog.clear();
 		return *this;
 	}
-	for (int i = 0; i < tables.size(); i++) {
+	for (int i = 0; i < (int)tables.size(); i++) {
 			delete tables.at(i);
 	}
-	for (int i = 0; i < actionsLog.size(); i++) {
+	for (int i = 0; i < (int)actionsLog.size(); i++) {
 		delete actionsLog.at(i);
 	}
 	menu.clear();
 	Tnumber = other.getNumOfTables();
 	open = other.isOpen();
 	tables = other.tables;
-	menu = other.menu;
+	for (int i = 0; i < (int)other.menu.size(); i++)
+	{
+		menu.push_back(other.menu.at(i));
+	}
 	actionsLog = other.actionsLog;
 	other.tables.clear();
 	other.actionsLog.clear();
@@ -161,10 +167,10 @@ Restaurant & Restaurant::operator=(Restaurant && other)
 
 Restaurant::~Restaurant()
 {
-	for (int i = 0; i < tables.size(); i++) {
+	for (int i = 0; i < (int)tables.size(); i++) {
 		delete tables.at(i);
 	}
-	for (int i = 0; i < actionsLog.size(); i++) {
+	for (int i = 0; i < (int)actionsLog.size(); i++) {
 		delete actionsLog.at(i);
 	}
 }
@@ -182,13 +188,13 @@ void Restaurant::start()
 			std::vector<Customer*> customers;
 			stg = stg.substr(5);
 			int id = 0, i = 0;
-			while (i < stg.length())
+			while (i < (int)stg.length())
 			{
 				id = id * 10 + (int)stg.at(i);
 				i++;
 			}
 			stg = stg.substr(i + 2);
-			while (stg.length() > 0)
+			while ((int)stg.length() > 0)
 			{
 				i = 0;
 				std::string name = "";
@@ -312,7 +318,7 @@ int Restaurant::getNumOfTables() const
 
 Table * Restaurant::getTable(int ind)
 {
-	if (tables.size()>ind)
+	if ((int)tables.size()>ind)
 	{
 		return tables.at(ind - 1);
 	}

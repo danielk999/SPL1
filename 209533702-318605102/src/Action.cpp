@@ -4,7 +4,7 @@
 
 using namespace std;
 
-BaseAction::BaseAction(): status(PENDING), errorMsg()
+BaseAction::BaseAction(): errorMsg(),status(PENDING)
 {
 }
 
@@ -17,6 +17,8 @@ void BaseAction::complete()
 {
 	status = COMPLETED;
 }
+
+BaseAction::~BaseAction(){}
 
 void BaseAction::error(std::string errorMsg)
 {
@@ -40,21 +42,21 @@ string BaseAction::statusToString() const
 	return "";
 }
 
-OpenTable::OpenTable(int id, std::vector<Customer*>& customersList): tableId(id), customers(customersList)
+OpenTable::OpenTable(int id, std::vector<Customer*>& customersList): tableId(id), customers(customersList),customersStr("")
 {
 }
 
 void OpenTable::act(Restaurant & restaurant)
 {
 	Table* t = restaurant.getTable(tableId);
-	if (t == nullptr || t->isOpen() || customers.size() > t->getCapacity())
+	if ((t == nullptr) || (t->isOpen()) || ((int)customers.size() > t->getCapacity()))
 	{
 		error("Table does not exist or is already open");
 		return;
 	}
 	t->openTable();
 	customersStr = "";
-	for (int i = 0; i < customers.size(); i++)
+	for (int i = 0; i < (int)customers.size(); i++)
 	{
 		t->addCustomer(customers.at(i));
 		customersStr += customers.at(i)->toString();
@@ -81,7 +83,7 @@ Order::Order(int id): tableId(id)
 void Order::act(Restaurant & restaurant)
 {
 	Table* t = restaurant.getTable(tableId);
-	if (t == nullptr || !t->isOpen())
+	if ((t == nullptr) || (!t->isOpen()))
 	{
 		error("Table does not exist or is not open");
 		return;
@@ -89,11 +91,11 @@ void Order::act(Restaurant & restaurant)
 	vector<OrderPair> oldOrders = t->getOrders();
 	t->order(restaurant.getMenu());
 	vector<OrderPair> newOrders = t->getOrders();
-	for (int i = 0; i < oldOrders.size(); i++)
+	for (int i = 0; i < (int)oldOrders.size(); i++)
 	{
-		for (int j = 0; j < newOrders.size(); j++)
+		for (int j = 0; j < (int)newOrders.size(); j++)
 		{
-			if (oldOrders.at(i) == newOrders.at(j))
+			if ((oldOrders.at(i).first == newOrders.at(j).first)&(oldOrders.at(i).second.getId() == newOrders.at(j).second.getId()))
 			{
 				newOrders.at(j).first = -1;
 				oldOrders.at(i).first = -1;
@@ -101,7 +103,7 @@ void Order::act(Restaurant & restaurant)
 			}
 		}
 	}
-	for (int i = 0; i < newOrders.size(); i++)
+	for (int i = 0; i < (int)newOrders.size(); i++)
 	{
 		if(newOrders.at(i).first != -1)
 			cout << t->getCustomer(newOrders.at(i).first)->getName() << " ordered " << newOrders.at(i).second.getName() << endl;
@@ -130,7 +132,7 @@ void MoveCustomer::act(Restaurant & restaurant)
 	Customer* c;
 	if (src != nullptr)
 		c = src->getCustomer(id);
-	if (src == nullptr || !src->isOpen() || dst == nullptr || !dst->isOpen() || c == nullptr || dst->getCapacity == dst->getCustomers().size())
+	if ((src == nullptr) || (!src->isOpen()) || (dst == nullptr) || (!dst->isOpen()) || (c == nullptr) || (dst->getCapacity() == (int)dst->getCustomers().size()))
 	{
 		error("Cannot move customer");
 		return;
@@ -138,7 +140,7 @@ void MoveCustomer::act(Restaurant & restaurant)
 	vector<OrderPair> orders = src->getCustomerOrders(id);
 	src->removeCustomerOrders(id);
 	src->removeCustomer(id);	
-	if (src->getCustomers().size() == 0)
+	if ((int)src->getCustomers().size() == 0)
 		src->closeTable();
 	dst->addCustomer(c);
 	dst->addOrders(orders);
@@ -162,7 +164,7 @@ Close::Close(int id):tableId(id)
 void Close::act(Restaurant & restaurant)
 {
 	Table* t= restaurant.getTable(tableId);
-	if(t==nullptr || !t->isOpen)
+	if((t==nullptr) || (!t->isOpen()))
 	{
 		this->error("Table does not exist or is not open");
 	}
@@ -170,7 +172,7 @@ void Close::act(Restaurant & restaurant)
 	{
 		int price = 0;
 		std::vector<OrderPair>& orders = t->getOrders();
-		for (int i = 0; i < orders.size(); i++)
+		for (int i = 0; i < (int)orders.size(); i++)
 		{
 			price += orders.at(i).second.getPrice();
 		}
@@ -196,7 +198,7 @@ CloseAll::CloseAll()
 
 void CloseAll::act(Restaurant & restaurant)
 {
-	for (int i = 0; i < restaurant.getNumOfTables; i++) {
+	for (int i = 0; i < restaurant.getNumOfTables(); i++) {
 		if (restaurant.getTable(i)->isOpen()) {
 			Close c(i + 1);
 			c.act(restaurant);
@@ -222,7 +224,7 @@ PrintMenu::PrintMenu()
 void PrintMenu::act(Restaurant & restaurant)
 {
 	vector<Dish> menu = restaurant.getMenu();
-	for (int i = 0; i < menu.size(); i++)
+	for (int i = 0; i < (int)menu.size(); i++)
 		cout << menu.at(i).toString() << endl;
 	complete();
 }
@@ -243,17 +245,17 @@ PrintTableStatus::PrintTableStatus(int id):tableId(id)
 
 void PrintTableStatus::act(Restaurant & restaurant)
 {
-	if (tableId <= restaurant.getNumOfTables) {
+	if (tableId <= restaurant.getNumOfTables()) {
 		Table *t = restaurant.getTable(tableId);
-		cout << "Table " + to_string(tableId) + " status " + to_string(t->isOpen) << endl;
-		if (t->isOpen) {
+		cout << "Table " + to_string(tableId) + " status " + to_string(t->isOpen()) << endl;
+		if (t->isOpen()) {
 			std::vector<Customer*> customers = t->getCustomers();
-			for (int i = 0; i < customers.size(); i++) {
+			for (int i = 0; i < (int)customers.size(); i++) {
 				cout << to_string(customers.at(i)->getId()) + " " + customers.at(i)->getName() << endl;
 			}
 			std::vector<OrderPair> orders = t->getOrders();
-			for (int i = 0; i < orders.size(); i++) {
-				cout << orders.at(i).second.getName() + " " + to_string(orders.at(i).second.getPrice)+"NIS"+" "+to_string(orders.at(i).first) << endl;
+			for (int i = 0; i < (int)orders.size(); i++) {
+				cout << orders.at(i).second.getName() + " " + to_string(orders.at(i).second.getPrice())+"NIS"+" "+to_string(orders.at(i).first) << endl;
 			}
 		}
 	}
@@ -277,7 +279,7 @@ PrintActionsLog::PrintActionsLog()
 void PrintActionsLog::act(Restaurant & restaurant)
 {
 	vector<BaseAction*> actions = restaurant.getActionsLog();
-	for (int i = actions.size() - 1; i >= 0; i--)
+	for (int i = (int)actions.size() - 1; i >= 0; i--)
 		cout << actions.at(i)->toString() << endl;
 	complete();
 }
