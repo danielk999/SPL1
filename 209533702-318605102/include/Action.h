@@ -40,6 +40,7 @@ public:
 	std::string toString() const;
 	BaseAction* clone();
 private:
+	OpenTable(int id, std::string customersStr, ActionStatus status, std::string errorMsg);
 	const int tableId;
 	std::vector<Customer *> customers;
 	std::string customersStr="";
@@ -53,6 +54,7 @@ public:
 	std::string toString() const;
 	BaseAction* clone();
 private:
+	Order(int id, ActionStatus status, std::string errorMsg);
 	const int tableId;
 };
 
@@ -64,6 +66,7 @@ public:
 	std::string toString() const;
 	BaseAction* clone();
 private:
+	MoveCustomer(int src, int dst, int customerId,ActionStatus status,std::string errorMsg);
 	const int srcTable;
 	const int dstTable;
 	const int id;
@@ -77,6 +80,7 @@ public:
 	std::string toString() const;
 	BaseAction* clone();
 private:
+	Close(int id, ActionStatus status, std::string errorMsg);
 	const int tableId;
 };
 
@@ -88,6 +92,7 @@ public:
 	std::string toString() const;
 	BaseAction* clone();
 private:
+	CloseAll(ActionStatus status, std::string errorMsg);
 };
 
 
@@ -98,6 +103,7 @@ public:
 	std::string toString() const;
 	BaseAction* clone();
 private:
+	PrintMenu(ActionStatus status, std::string errorMsg);
 };
 
 
@@ -108,6 +114,7 @@ public:
 	std::string toString() const;
 	BaseAction* clone();
 private:
+	PrintTableStatus(int id, ActionStatus status, std::string errorMsg);
 	const int tableId;
 };
 
@@ -119,6 +126,7 @@ public:
 	std::string toString() const;
 	BaseAction* clone();
 private:
+	PrintActionsLog(ActionStatus status, std::string errorMsg);
 };
 
 
@@ -129,6 +137,7 @@ public:
 	std::string toString() const;
 	BaseAction* clone();
 private:
+	BackupRestaurant(ActionStatus status, std::string errorMsg);
 };
 
 
@@ -138,6 +147,8 @@ public:
 	void act(Restaurant &restaurant);
 	std::string toString() const;
 	BaseAction* clone();
+private:
+	RestoreResturant(ActionStatus status, std::string errorMsg);
 };
 
 

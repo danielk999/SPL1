@@ -77,7 +77,11 @@ std::string OpenTable::toString() const
 
 BaseAction * OpenTable::clone()
 {
-	return new OpenTable(tableId, customers);
+	return new OpenTable(tableId, customersStr, getStatus(), getErrorMsg());
+}
+
+OpenTable::OpenTable(int id, std::string customersStr, ActionStatus status, std::string errorMsg): this.id(id), this.customersStr(customersStr), this.status(status), this.errorMsg(errorMsg)
+{
 }
 
 Order::Order(int id): tableId(id)
@@ -122,7 +126,11 @@ std::string Order::toString() const
 
 BaseAction * Order::clone()
 {
-	return new Order(tableId);
+	return new Order(tableId,getStatus(), getErrorMsg());
+}
+
+Order::Order(int id, ActionStatus status, std::string errorMsg): id(tableId), this.status(status), this.errorMsg(errorMsg)
+{
 }
 
 MoveCustomer::MoveCustomer(int src, int dst, int customerId): srcTable(src), dstTable(dst), id(customerId)
@@ -158,7 +166,12 @@ std::string MoveCustomer::toString() const
 
 BaseAction * MoveCustomer::clone()
 {
-	return new MoveCustomer(srcTable, dstTable, id);
+	return new MoveCustomer(srcTable, dstTable, id, getStatus(), getErrorMsg());
+}
+
+MoveCustomer::MoveCustomer(int src, int dst, int customerId, ActionStatus status, std::string errorMsg)
+	:srcTable(src), dstTable(dst), id(customerId), this.status(status), this.errorMsg(errorMsg)
+{
 }
 
 Close::Close(int id):tableId(id)
@@ -193,7 +206,12 @@ std::string Close::toString() const
 
 BaseAction * Close::clone()
 {
-	return new Close(tableId);
+	return new Close(tableId, getStatus(), getErrorMsg());
+}
+
+Close::Close(int id, ActionStatus status, std::string errorMsg)
+	: this.id(id), this.status(status), this.errorMsg(errorMsg)
+{
 }
 
 CloseAll::CloseAll()
@@ -218,7 +236,11 @@ std::string CloseAll::toString() const
 
 BaseAction * CloseAll::clone()
 {
-	return new CloseAll();
+	return new CloseAll(getStatus(), getErrorMsg());
+}
+
+CloseAll::CloseAll(ActionStatus status, std::string errorMsg): this.status(status), this.errorMsg(errorMsg)
+{
 }
 
 PrintMenu::PrintMenu()
@@ -240,7 +262,11 @@ std::string PrintMenu::toString() const
 
 BaseAction * PrintMenu::clone()
 {
-	return new PrintMenu();
+	return new PrintMenu(getStatus(), getErrorMsg());
+}
+
+PrintMenu::PrintMenu(ActionStatus status, std::string errorMsg) : this.status(status), this.errorMsg(errorMsg)
+{
 }
 
 PrintTableStatus::PrintTableStatus(int id):tableId(id)
@@ -283,7 +309,11 @@ std::string PrintTableStatus::toString() const
 
 BaseAction * PrintTableStatus::clone()
 {
-	return new PrintTableStatus(tableId);
+	return new PrintTableStatus(tableId, getStatus(), getErrorMsg());
+}
+
+PrintTableStatus::PrintTableStatus(int id, ActionStatus status, std::string errorMsg) : this.id(id), this.status(status), this.errorMsg(errorMsg)
+{
 }
 
 PrintActionsLog::PrintActionsLog()
@@ -305,7 +335,11 @@ std::string PrintActionsLog::toString() const
 
 BaseAction * PrintActionsLog::clone()
 {
-	return new PrintActionsLog();
+	return new PrintActionsLog(getStatus(), getErrorMsg());
+}
+
+PrintActionsLog::PrintActionsLog(ActionStatus status, std::string errorMsg) : this.status(status), this.errorMsg(errorMsg)
+{
 }
 
 BackupRestaurant::BackupRestaurant()
@@ -330,7 +364,11 @@ std::string BackupRestaurant::toString() const
 
 BaseAction * BackupRestaurant::clone()
 {
-	return new BackupRestaurant();
+	return new BackupRestaurant(getStatus(), getErrorMsg());
+}
+
+BackupRestaurant::BackupRestaurant(ActionStatus status, std::string errorMsg) : this.status(status), this.errorMsg(errorMsg)
+{
 }
 
 RestoreResturant::RestoreResturant()
@@ -355,5 +393,9 @@ std::string RestoreResturant::toString() const
 
 BaseAction * RestoreResturant::clone()
 {
-	return new RestoreResturant();
+	return new RestoreResturant(getStatus(), getErrorMsg());
+}
+
+RestoreResturant::RestoreResturant(ActionStatus status, std::string errorMsg) : this.status(status), this.errorMsg(errorMsg)
+{
 }
