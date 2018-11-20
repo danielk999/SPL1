@@ -101,6 +101,8 @@ Restaurant & Restaurant::operator=(Restaurant & other)
 		delete actionsLog.at(i);
 	}
 	menu.clear();
+	tables.clear();
+	actionsLog.clear();
 	Tnumber = other.getNumOfTables();
 	open = other.isOpen();
 	for (int i = 0; i < (int)other.tables.size(); i++)
@@ -133,6 +135,8 @@ Restaurant & Restaurant::operator=(Restaurant && other)
 		delete actionsLog.at(i);
 	}
 	menu.clear();
+	tables.clear();
+	actionsLog.clear();
 	Tnumber = other.getNumOfTables();
 	open = other.isOpen();
 	tables = other.tables;
@@ -309,4 +313,15 @@ std::vector<Dish>& Restaurant::getMenu()
 bool Restaurant::isOpen()
 {
 	return open;
+}
+
+std::string Restaurant::toString()
+{
+	std::string toReturn="";
+	toReturn +="table number: "+ to_string(Tnumber)+ '\n';
+	for (int i = 0; i < (int)tables.size(); i++)
+	{
+		toReturn +="table number: " +to_string(i)+" is open? " + to_string(tables.at(i)->isOpen())+'\n';
+	}
+	return toReturn;
 }
