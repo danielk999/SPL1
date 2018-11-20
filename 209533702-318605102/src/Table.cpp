@@ -1,5 +1,5 @@
 #include "Table.h"
-
+#include <iostream>
 using namespace std;
 
 Table::Table(int t_capacity): capacity(t_capacity), open(false), customersList(), orderList()
@@ -65,7 +65,8 @@ void Table::removeCustomerOrders(int id)
 	vector<OrderPair> orders;
 	for (int i = 0; i < (int)orderList.size(); i++)
 		if (orderList.at(i).first != id)
-			orders.push_back(orderList.at(i));	
+			orders.push_back(orderList.at(i));
+	orderList.clear();	
 	for (int i = 0; i < (int)orders.size(); i++)
 	{
 		orderList.push_back(OrderPair(orders.at(i).first,Dish(orders.at(i).second.getId(),orders.at(i).second.getName(),orders.at(i).second.getPrice(),orders.at(i).second.getType())));

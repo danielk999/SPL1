@@ -1,37 +1,29 @@
-#include "Restaurant.h"
-#include <iostream>     
-#include <sstream>       
+#include "Restaurant.h"     
+#include <sstream>
+#include <fstream>  
+using namespace std;    
 
 
 Restaurant::Restaurant():open(false),tables(),menu(),actionsLog(){}
 
 Restaurant::Restaurant(const std::string & configFilePath):open(false), tables(), menu(), actionsLog()
 {
-	std::istringstream iss(configFilePath);
+	std::ifstream file;
+	file.open(configFilePath);
 	std::vector<std::string> results;
 	std::string input;
-	while (std::getline(iss, input, '\n')) {
+	while (std::getline(file, input, '\n')) {
 		results.push_back(input);
 	}
 	int count = 1;
 	for (int i = 0; i < (int)results.size(); i++)
 	{
+		
 		if ((results.at(i)[0] != '#') & (results.at(i)!=""))
 		{
 			if (count == 1)
 			{
-				int length = 0;
-				for (int j = 0; j < (int)results.at(i).size(); j++) 
-				{
-					if ((results.at(i)[j] != ' ') & (results.at(i)[j] != '\n'))
-					{
-						length = length * 10 + (int)results.at(i)[j];
-					}
-					else 
-					{
-						break;
-					}
-				}
+				int length = stoi(results.at(i));
 				count++;
 				Tnumber = length;
 			}
@@ -44,18 +36,7 @@ Restaurant::Restaurant(const std::string & configFilePath):open(false), tables()
 				}
 				for (int j = 0; (j < (int)TSeats.size()) & (j < Tnumber); j++)
 				{
-					int length = 0;
-					for (int j = 0; j < (int)results.at(i).size(); j++)
-					{
-						if ((results.at(i)[j] != ' ') & (results.at(i)[j] != '\n'))
-						{
-							length = length * 10 + (int)results.at(i)[j];
-						}
-						else
-						{
-							break;
-						}
-					}
+					int length = stoi(TSeats.at(j));
 					tables.push_back(new Table(length));
 				}
 				count++;
@@ -177,70 +158,65 @@ Restaurant::~Restaurant()
 
 void Restaurant::start()
 {
-	std::cout << "Restaurant is now open!" << '\n' << std::endl;
+	std::cout << "Restaurant is now open!"  << std::endl;
 	bool running = true;
 	while (running) 
 	{
 		std::string stg;
-		std::cin >> stg;
-		if (stg.substr(0, 4) == "open")
+		std::getline(std::cin,stg);
+		std::istringstream iss(stg);
+		std::vector<std::string> breakDouwn;
+		std::string input;
+		while (std::getline(iss, input, ' ')) {
+			breakDouwn.push_back(input);
+		}
+		if (breakDouwn.at(0)=="open")
 		{
 			std::vector<Customer*> customers;
-			stg = stg.substr(5);
-			int id = 0, i = 0;
-			while (i < (int)stg.length())
+			int id = stoi(breakDouwn.at(1));
+			int i=2;
+			while (i<(int)breakDouwn.size())
 			{
-				id = id * 10 + (int)stg.at(i);
-				i++;
-			}
-			stg = stg.substr(i + 2);
-			while ((int)stg.length() > 0)
-			{
-				i = 0;
-				std::string name = "";
-				while (stg.at(i) != ',')
-				{
-					name += stg.at(i);
-					i++;
+				std::istringstream iss(breakDouwn.at(i));
+				std::vector<std::string> temp;
+				while (std::getline(iss, input, ',')) {
+					temp.push_back(input);
 				}
-				stg = stg.substr(i + 1);
-				std::string style = stg.substr(0, 3);
 				Customer *c;
-				if (style == "chp")
+				if (temp.at(1) == "chp")
 				{
-					c = new CheapCustomer(name, Cid);
+					c = new CheapCustomer(temp.at(0), Cid);
 					Cid++;
 				}
-				else if (style == "veg")
+				else if (temp.at(1) == "veg")
 				{
-					c = new VegetarianCustomer(name, Cid);
+					c = new VegetarianCustomer(temp.at(0), Cid);
 					Cid++;
 				}
-				else if (style == "spc")
+				else if (temp.at(1) == "spc")
 				{
-					c = new SpicyCustomer(name, Cid);
+					c = new SpicyCustomer(temp.at(0), Cid);
 					Cid++;
 				}
 				else
 				{
-					c = new AlchoholicCustomer(name, Cid);
+					c = new AlchoholicCustomer(temp.at(0), Cid);
 					Cid++;
 				}
 				customers.push_back(c);
-				stg = stg.substr(0, 4);
+				i++;
 			}
 			BaseAction *act = new OpenTable(id, customers);
 			act->act(*this);
 			actionsLog.push_back(act);
 		}
-		else if (stg.substr(0,5)=="order")
+		else if (breakDouwn.at(0)=="order")
 		{
-			stg = stg.substr(6);
-			BaseAction *act = new Order(stoi(stg));
+			BaseAction *act = new Order(stoi(breakDouwn.at(1)));
 			act->act(*this);
 			actionsLog.push_back(act);
 		}
-		else if (stg.substr(0, 4) == "menu")
+		else if (breakDouwn.at(0) == "move")
 		{
 			std::istringstream iss(stg);
 			std::vector<std::string> words;
@@ -252,7 +228,7 @@ void Restaurant::start()
 			act->act(*this);
 			actionsLog.push_back(act);
 		}
-		else if (stg.substr(0, 4) == "close")
+		else if (breakDouwn.at(0) == "close")
 		{
 			std::istringstream iss(stg);
 			std::vector<std::string> words;
@@ -264,7 +240,7 @@ void Restaurant::start()
 			act->act(*this);
 			actionsLog.push_back(act);
 		}
-		else if(stg.substr(0, 5) == "status")
+		else if(breakDouwn.at(0) == "status")
 		{
 			std::istringstream iss(stg);
 			std::vector<std::string> words;
@@ -305,7 +281,6 @@ void Restaurant::start()
 			BaseAction *act = new CloseAll();
 			act->act(*this);
 			actionsLog.push_back(act);
-			delete this;
 			running=false;
 		}
 	}
@@ -318,11 +293,7 @@ int Restaurant::getNumOfTables() const
 
 Table * Restaurant::getTable(int ind)
 {
-	if ((int)tables.size()>ind)
-	{
-		return tables.at(ind - 1);
-	}
-	return nullptr;
+	return tables.at(ind);
 }
 
 const std::vector<BaseAction*>& Restaurant::getActionsLog() const

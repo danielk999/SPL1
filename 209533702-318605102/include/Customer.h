@@ -41,6 +41,7 @@ public:
 	std::vector<int> order(const std::vector<Dish> &menu);
 	std::string toString() const;
 private:
+	bool ordered=false;
 };
 
 

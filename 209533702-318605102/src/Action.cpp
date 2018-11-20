@@ -22,6 +22,7 @@ BaseAction::~BaseAction(){}
 
 void BaseAction::error(std::string errorMsg)
 {
+	cout<<"Error: " + errorMsg<<endl;
 	status = ERROR;
 	this->errorMsg = errorMsg;
 }
@@ -48,6 +49,12 @@ OpenTable::OpenTable(int id, std::vector<Customer*>& customersList): tableId(id)
 
 void OpenTable::act(Restaurant & restaurant)
 {
+	customersStr = "";
+	for (int i = 0; i < (int)customers.size(); i++)
+	{
+		customersStr += customers.at(i)->toString();
+		customersStr += " ";
+	}
 	Table* t = restaurant.getTable(tableId);
 	if ((t == nullptr) || (t->isOpen()) || ((int)customers.size() > t->getCapacity()))
 	{
@@ -55,12 +62,9 @@ void OpenTable::act(Restaurant & restaurant)
 		return;
 	}
 	t->openTable();
-	customersStr = "";
 	for (int i = 0; i < (int)customers.size(); i++)
 	{
 		t->addCustomer(customers.at(i));
-		customersStr += customers.at(i)->toString();
-		customersStr += " ";
 	}
 	customers.clear();
 	complete();
@@ -149,7 +153,7 @@ void MoveCustomer::act(Restaurant & restaurant)
 
 std::string MoveCustomer::toString() const
 {
-	return "move " + to_string(srcTable) + ' ' + to_string(dstTable) + ' ' + to_string(id);
+	return "move " + to_string(srcTable) + ' ' + to_string(dstTable) + ' ' + to_string(id)+" "+statusToString();
 }
 
 BaseAction * MoveCustomer::clone()
@@ -200,7 +204,7 @@ void CloseAll::act(Restaurant & restaurant)
 {
 	for (int i = 0; i < restaurant.getNumOfTables(); i++) {
 		if (restaurant.getTable(i)->isOpen()) {
-			Close c(i + 1);
+			Close c(i);
 			c.act(restaurant);
 		}
 	}
@@ -247,16 +251,26 @@ void PrintTableStatus::act(Restaurant & restaurant)
 {
 	if (tableId <= restaurant.getNumOfTables()) {
 		Table *t = restaurant.getTable(tableId);
-		cout << "Table " + to_string(tableId) + " status " + to_string(t->isOpen()) << endl;
+		std::string s;
+		if(t->isOpen()){
+			s="open";
+		}
+		else{
+			s="close";
+		}
+		cout << "Table " + to_string(tableId) + " status: " + s << endl;
 		if (t->isOpen()) {
 			std::vector<Customer*> customers = t->getCustomers();
+			cout << "Customers:"<< endl;
 			for (int i = 0; i < (int)customers.size(); i++) {
 				cout << to_string(customers.at(i)->getId()) + " " + customers.at(i)->getName() << endl;
 			}
 			std::vector<OrderPair> orders = t->getOrders();
+			cout << "Orders:" << endl;
 			for (int i = 0; i < (int)orders.size(); i++) {
 				cout << orders.at(i).second.getName() + " " + to_string(orders.at(i).second.getPrice())+"NIS"+" "+to_string(orders.at(i).first) << endl;
 			}
+			cout << "Current Bill: " + to_string(t->getBill())+"NIS" << endl;
 		}
 	}
 	this->complete();
@@ -264,7 +278,7 @@ void PrintTableStatus::act(Restaurant & restaurant)
 
 std::string PrintTableStatus::toString() const
 {
-	return "status " + to_string(tableId) + " " + to_string(this->getStatus());
+	return "status " + to_string(tableId) + " " + statusToString();
 }
 
 BaseAction * PrintTableStatus::clone()
@@ -279,7 +293,7 @@ PrintActionsLog::PrintActionsLog()
 void PrintActionsLog::act(Restaurant & restaurant)
 {
 	vector<BaseAction*> actions = restaurant.getActionsLog();
-	for (int i = (int)actions.size() - 1; i >= 0; i--)
+	for (int i = 0; i <(int)actions.size(); i++)
 		cout << actions.at(i)->toString() << endl;
 	complete();
 }
@@ -300,7 +314,12 @@ BackupRestaurant::BackupRestaurant()
 
 void BackupRestaurant::act(Restaurant & restaurant)
 {
-	backup = &restaurant;
+	if(backup==nullptr)
+		backup=new Restaurant(restaurant);
+	else
+	{
+		*backup = restaurant;
+	}
 	complete();
 }
 

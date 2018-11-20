@@ -1,4 +1,6 @@
 #include "Customer.h"
+#include <iostream>
+using namespace std;
 
 Customer::Customer(std::string c_name, int c_id):name(c_name),id(c_id){}
 
@@ -45,7 +47,7 @@ Customer * VegetarianCustomer::clone()
 std::vector<int> VegetarianCustomer::order(const std::vector<Dish>& menu)
 {
 	int smallestid(-1), price(0), idofbvg = 0;;
-	for (int i = 0; menu.size(); i++)
+	for (int i = 0;i<(int) menu.size(); i++)
 	{
 		if((smallestid==-1) & (menu.at(i).getType()==0))
 		{
@@ -71,15 +73,22 @@ std::vector<int> VegetarianCustomer::order(const std::vector<Dish>& menu)
 	}
 	else if (smallestid == -1 )
 	{
-		return std::vector<int>(idofbvg);
+		std::vector<int> toReturn;
+		toReturn.push_back(idofbvg);
+		return toReturn;
 	}
 	else if (price == 0)
 	{
-		return std::vector<int>(smallestid);
+		std::vector<int> toReturn;
+		toReturn.push_back(smallestid);
+		return toReturn;
 	}
 	else
 	{
-		return std::vector<int>(smallestid, idofbvg);
+		std::vector<int> toReturn;
+		toReturn.push_back(smallestid);
+		toReturn.push_back(idofbvg);
+		return toReturn;
 	}
 }
 
@@ -102,20 +111,26 @@ Customer * CheapCustomer::clone()
 
 std::vector<int> CheapCustomer::order(const std::vector<Dish>& menu)
 {
-	int lowestprice = menu.at(0).getPrice(), lowestid = 0;
-	for (int i = 1; i < (int)menu.size(); i++)
-	{
-		if (lowestprice > menu.at(i).getPrice())
+	if(!ordered){
+		int lowestprice = menu.at(0).getPrice(), lowestid = 0;
+		for (int i = 1; i < (int)menu.size(); i++)
 		{
-			lowestprice = menu.at(i).getPrice();
-			lowestid = menu.at(i).getId();
+			if (lowestprice > menu.at(i).getPrice())
+			{
+				lowestprice = menu.at(i).getPrice();
+				lowestid = menu.at(i).getId();
+			}
+			else if ((lowestprice == menu.at(i).getPrice()) & (lowestid > menu.at(i).getId()))
+			{
+				lowestid = menu.at(i).getId();
+			}
 		}
-		else if ((lowestprice == menu.at(i).getPrice()) & (lowestid > menu.at(i).getId()))
-		{
-			lowestid = menu.at(i).getId();
-		}
+		ordered=true;
+		std::vector<int> toReturn;
+		toReturn.push_back(lowestid);
+		return toReturn;
 	}
-	return std::vector<int>(lowestid);
+	return std::vector<int>();
 }
 
 std::string CheapCustomer::toString() const
@@ -165,7 +180,9 @@ std::vector<int> SpicyCustomer::order(const std::vector<Dish>& menu)
 		}
 		else 
 		{
-		return std::vector<int>(id);
+			std::vector<int> toReturn;
+			toReturn.push_back(id);
+			return toReturn;
 		}
 	}
 	else
@@ -194,7 +211,9 @@ std::vector<int> SpicyCustomer::order(const std::vector<Dish>& menu)
 		}
 		else
 		{
-			return std::vector<int>(id);
+			std::vector<int> toReturn;
+			toReturn.push_back(id);
+			return toReturn;
 		}
 	}
 }
@@ -220,36 +239,38 @@ Customer * AlchoholicCustomer::clone()
 
 std::vector<int> AlchoholicCustomer::order(const std::vector<Dish>& menu)
 {
-	int price = 0, id = 0;
+	int price = -1, id = 0;
 	for (int i = 0; i < (int)menu.size(); i++)
 	{
-		if ((price == 0) & (menu.at(i).getType() == 3) & (lastPrice == menu.at(i).getPrice()) & (lastId < menu.at(i).getId()))
+		if ((price == -1) & (menu.at(i).getType() == 3) & (lastPrice < menu.at(i).getPrice()))
 		{
 			price = menu.at(i).getPrice();
 			id = menu.at(i).getId();
 		}
-		else if ((price == 0) & (menu.at(i).getType() == 3) & (lastPrice > menu.at(i).getPrice()))
+		else if ((price == -1) & (menu.at(i).getType() == 3) & (lastPrice == menu.at(i).getPrice()) & (lastId < menu.at(i).getId()))
 		{
 			price = menu.at(i).getPrice();
 			id = menu.at(i).getId();
 		}
-		else if ((price > menu.at(i).getPrice()) & (menu.at(i).getType() == 3) & (lastPrice > menu.at(i).getPrice()))
+		else if ((price > menu.at(i).getPrice()) & (menu.at(i).getType() == 3) & (lastPrice < menu.at(i).getPrice()))
 		{
 			price = menu.at(i).getPrice();
 			id = menu.at(i).getId();
 		}
-		else if ((price == menu.at(i).getPrice()) & (menu.at(i).getType() == 3) & (lastPrice > menu.at(i).getPrice()) & (id > menu.at(i).getId()))
+		else if ((price == menu.at(i).getPrice()) & (menu.at(i).getType() == 3) & (lastPrice < menu.at(i).getPrice()) & (id > menu.at(i).getId()))
 		{
 			id = menu.at(i).getId();
 		}
 	}
-	if (price != 0)
+	if (price != -1)
 	{
 		lastPrice = price;
 		lastId = id;
-		return std::vector<int>(id);
+		std::vector<int> toReturn;
+		toReturn.push_back(id);
+		return toReturn;
 	}
-	return std::vector<int>(0);
+	return std::vector<int>();
 }
 
 std::string AlchoholicCustomer::toString() const

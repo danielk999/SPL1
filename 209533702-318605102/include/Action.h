@@ -42,7 +42,7 @@ public:
 private:
 	const int tableId;
 	std::vector<Customer *> customers;
-	std::string customersStr;
+	std::string customersStr="";
 };
 
 
