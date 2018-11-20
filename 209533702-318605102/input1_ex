@@ -4,7 +4,6 @@ order 1
 open 2 Idan,veg Elad,alc
 order 2
 order 2
-move 1 2 1
 status 1
 status 2
 open 2 Jon,spc Sam,spc
