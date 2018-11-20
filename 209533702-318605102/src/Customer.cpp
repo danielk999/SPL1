@@ -10,22 +10,6 @@ Customer::Customer(Customer && other):name(other.getName()),id(other.getId()){}
 
 Customer::~Customer(){}
 
-Customer & Customer::operator=(const Customer & other)
-{
-	if (this == &other) {
-		return *this;
-	}
-	return *this;
-}
-
-Customer & Customer::operator=(Customer && other)
-{
-	if (this == &other) {
-		return *this;
-	}
-	return *this;
-}
-
 std::string Customer::getName() const
 {
 	return name;

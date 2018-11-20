@@ -14,8 +14,6 @@ public:
 	virtual std::string toString() const = 0;
 	virtual ~Customer();
 	virtual Customer* clone() = 0;
-	Customer & operator = (const Customer &other);
-	Customer & operator = (Customer &&other);
 	std::string getName() const;
 	int getId() const;
 private:

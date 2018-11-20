@@ -59,6 +59,10 @@ void OpenTable::act(Restaurant & restaurant)
 	if ((t == nullptr) || (t->isOpen()) || ((int)customers.size() > t->getCapacity()))
 	{
 		error("Table does not exist or is already open");
+		for (int i = 0; i < (int)customers.size(); i++)
+		{
+			delete customers.at(i);
+		}
 		return;
 	}
 	t->openTable();
